@@ -1,0 +1,61 @@
+#div00{
+    width: 1200px;
+    height: 900px;
+    border: 10px solid black;
+    background-color: brown;
+}
+#div01{
+    width: 200px;
+    height: 200px;
+    border: 10px solid green;
+    background-color: rgb(148, 163, 148);
+    animation: div01 2s linear infinite alternate;
+}
+@keyframes div01{
+    0% {
+        width: 100px;
+        background-color: red;
+    }
+    50% {
+        width: 150px;
+        background-color: black;
+    }
+    100% {
+        width: 200px;
+        background-color: rgb(148, 163, 148);
+    }
+}
+#div01:hover{
+    animation-play-state: paused;
+}
+#div02{
+    width: 200px;
+    height: 200px;
+    border: 10px dashed yellow;
+    background-color: blueviolet;
+}
+#div02:hover{
+    transform: translate(20%, 20%) scale(1.5) rotate(90deg);
+    transition: all 2s ease-in-out 1s;
+}
+#div03{
+    width: 200px;
+    height: 200px;
+    border: 10px solid  rebeccapurple;
+    border-radius: 20% 30% 40% 50%;
+    background-color: greenyellow;
+}
+#div03:hover{
+    transform: translate3d(20px, 20px, 20px) scale(1.5);
+    transition: all 2s ease-in 1s;
+}
+#div04{
+    width: 200px;
+    height: 200px;
+    border: 10px solid  rebeccapurple;
+    border-radius: 0% 100% 0% 0%;
+    background-color: greenyellow;
+}
+#div04:hover{
+    transform: translate3d(20%, 20%, 20%) scale(1.5);
+}

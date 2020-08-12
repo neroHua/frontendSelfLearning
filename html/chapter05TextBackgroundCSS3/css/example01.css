@@ -1,0 +1,63 @@
+#id01{
+    font-family: "隶书";
+    font-style: italic;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+#id02{
+    font-family: "隶书";
+    font-style: normal;
+    font-size: 100%;
+    font-weight: lighter;
+}
+
+#id03{
+    font-family: "宋体";
+    font-style: normal;
+    font-size: 100%;
+    font-weight: bolder;
+}
+
+#id04{
+    color: green;
+    text-align: left;
+    text-indent: 2;
+    text-decoration: underline;
+    text-shadow: purple 10px 10px 5px;
+    line-height: normal;
+}
+
+#id05{
+    color: blue;
+    text-align: right;
+    text-indent: 3;
+    text-decoration: line-through;
+    text-shadow: purple 5px 5px 5px;
+    line-height: 100%;
+}
+
+#id06{
+    color: red;
+    text-align: right;
+    text-indent: 3;
+    text-decoration: overline;
+    text-shadow: purple -5px -5px 5px;
+    line-height: 100%;
+}
+
+#id07{
+    background-color: blue;
+}
+
+#id08{
+    background-color: red;
+}
+
+#id10{
+    width:200px;
+    height:200px;
+    border: 2px solid red;
+    /*background-color: green;*/
+    background-image: url("../picture/picture01.png")
+}

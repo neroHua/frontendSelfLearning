@@ -1,0 +1,15 @@
+h4[id]{
+    color:red;
+}
+h4[class=class002]{
+    color: green;
+}
+h4[name^=start]{
+    color:blue;
+}
+h4[name$=end]{
+    color:purple;
+}
+h4[name*=contain]{
+    color:pink;
+}

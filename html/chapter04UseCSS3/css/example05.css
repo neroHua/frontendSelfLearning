@@ -1,0 +1,6 @@
+div h4#id001{
+    color: blue;
+}
+div h4.class001{
+    color:red;
+}

@@ -1,0 +1,29 @@
+#div00{
+    width: 1400px;
+    height: 900px;
+    border: 10px solid black;
+    position: relative;
+    background-color: brown;
+}
+#div01{
+    width: 200px;
+    height: 200px;
+    border: 10px solid green;
+    position: fixed;
+    top: 20%;
+    left: 20%;
+    z-index: 1;
+    background-color: rgb(148, 163, 148);
+}
+#div04{
+    width: 200px;
+    height: 200px;
+    border: 10px solid  rebeccapurple;
+    border-radius: 0% 100% 0% 0%;
+    position: fixed;
+    top: 20%;
+    left: 20%;
+    z-index: 2;
+    opacity: 0.5;
+    background-color: greenyellow;
+}

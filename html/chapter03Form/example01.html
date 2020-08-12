@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>表单</title>
+    </head>
+    <body>
+        <form action="null" method5="post" enctype="multipart/form-data">
+            <input type="hidden" name="userId" value="1">
+            姓名：<input type="text" name="name" placeholder="姓名" required/><br/>
+            密码：<input type="password" name="password" placeholder="密码" required/><br/>
+            邮箱：<input type="email" name="email" placeholder="267633@qq.com"/><br/>
+            个人网址：<input type="url" name="selfURL" placeholder="我的个人网址是..."/><br/>
+            手机号码: <input type="number" name="phone" placeholder="138xxxxxxx18"/><br/>
+            口味轻重：<input type="range" name="taste" max="10" min="1" step="2" value="4" disabled/><br/>
+            性别：
+                男<input type="radio" name="sex" value="男"/>
+                女<input type="radio" name="sex" value="女"/>
+                <br/>
+            爱好：
+                篮球<input type="checkbox" name="interest" value="basketball"/>
+                足球<input type="checkbox" name="interest" value="football"/>
+                游泳<input type="checkbox" name="interest" value="swimming"/>
+                <br/>
+            出生日期：
+                <select name="birthdayYear">
+                    <option value="2000" selected>2000</option>
+                    <option value="2001">2001</option>
+                    <option value="2002">2002</option>
+                </select>
+                年
+                <select name="birthdayMonth">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                月
+                <select name="birthdayDay">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                日
+                <br/>
+            个人说明：<textarea name="description" cols="10" rows="4" placeholder="我的个人说明是..."></textarea><br/>
+            头像：<input type="file" name="facePicture" placeholder="选择要上传的头像"/><br/>
+            官方说明：<input type="text" name="officialFile" value="同意说明方可提交" readonly>
+            按钮：
+                <input type="button" value="普通按钮"/>
+                <input type="submit" value="提交按钮"/>
+                <input type="reset" value="重置按钮"/>
+                <input type="image" src="picture/picture01.png"/>
+                <br/>
+        </form>
+    </body>
+</html>

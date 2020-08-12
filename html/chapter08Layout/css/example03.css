@@ -1,0 +1,39 @@
+#div00{
+    width: 1400px;
+    height: 900px;
+    border: 10px solid black;
+    position: relative;
+    background-color: brown;
+}
+#div01{
+    width: 200px;
+    height: 200px;
+    border: 10px solid green;
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    background-color: rgb(148, 163, 148);
+}
+#div02{
+    width: 200px;
+    height: 200px;
+    border: 10px dashed yellow;
+    background-color: blueviolet;
+}
+#div03{
+    width: 200px;
+    height: 200px;
+    border: 10px solid  rebeccapurple;
+    border-radius: 20% 30% 40% 50%;
+    background-color: greenyellow;
+}
+#div04{
+    width: 200px;
+    height: 200px;
+    border: 10px solid  rebeccapurple;
+    border-radius: 0% 100% 0% 0%;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: greenyellow;
+}
