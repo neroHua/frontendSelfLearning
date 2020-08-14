@@ -12,7 +12,7 @@ person.setName = function(name) {
     this.name = name;
 }
 
-person.getAge= function() {
+person.getAge = function() {
     return this.age;
 }
 
