@@ -1,0 +1,23 @@
+#div00{
+    width: 500px;
+    height: 600px;
+    border: 10px solid green;
+}
+
+.class00{
+    width: 200px;
+    height: 200px;
+    border: 10px solid yellow;
+}
+
+#div01{
+    width: 500px;
+    height: 600px;
+    border: 10px solid black;
+}
+
+.class01{
+    width: 200px;
+    height: 200px;
+    border: 10px solid purple;
+}
