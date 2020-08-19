@@ -1,0 +1,11 @@
+li{
+    width: 200px;
+    margin: 10px;
+    border: 10px solid blue;
+}
+.odd{
+    background-color: blueviolet;
+}
+.even{
+    background-color: burlywood;
+}
