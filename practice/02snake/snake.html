@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>snake</title>
+    <link type="text/css" rel="stylesheet" href="css/snake.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <p>
+        <button onclick="start()">start</button>
+        <button onclick="switchAI()">ai</button>
+    </p>
+    <p>
+        <label for="range">speed</label>
+        <input type="range" id="range" min="50" max="1000" onchange="changeSpeed(this.value)">
+    </p>
+    <script type="text/JavaScript" src="js/snake.js"></script>
+</body>
+</html>
