@@ -315,6 +315,6 @@ canvas.width  = 200;
 canvas.style.backgroundColor = COLOR.GREEN;
 var canvasContext = canvas.getContext("2d");
 
-var game = new Game(8, DIRECTION.EAST, 200)
+var game = new Game(8, DIRECTION.EAST, 200);
 game.init();
 game.start();
