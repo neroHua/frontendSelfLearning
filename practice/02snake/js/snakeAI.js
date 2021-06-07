@@ -67,11 +67,16 @@ Game.prototype.initKeyDown = function() {
 
 Game.prototype.start = function() {
     let that = this;
+    let shortestWayToFood = null;
     this.running = setInterval(function () {
         if (that.snake.body.length === that.map.xGridCount * that.map.yGridCount) {
             clearInterval(that.running);
             alert("good game");
             return;
+        }
+
+        if (null === way || way.length <= 0) {
+            shortestWayToFood = this.findAShortestWayToFood();
         }
 
         if (that.canSnakeEatFood()) {
@@ -84,7 +89,8 @@ Game.prototype.start = function() {
         }
 
         let preSnakeTail = that.snake.body[that.snake.body.length - 1];
-        let successMoved = that.snake.moveOnePoint(that.direction, that.map);
+        // let successMoved = that.snake.moveOnePoint(that.direction, that.map);
+        let successMoved = that.snake.moveToThePoint(shortestWayToFood.shift());
         if (successMoved) {
             that.snake.clearPreSnakeTail(preSnakeTail);
             that.snake.drawNewSnakeHead();
@@ -123,6 +129,20 @@ Game.prototype.canSnakeEatFood = function() {
     }
 
     return false;
+}
+
+Game.prototype.findAShortestWayToFood = function() {
+    let currentFindShortestWay = null;
+    let currentWay = new Array();
+    shortWay = this.findAShortestWayToFood(this.direction, this.snake, currentFindShortestWay, currentWay);
+    return shortestWay;
+}
+
+Game.prototype.findAShortestWayToFood = function(direction, snake, currentFindShortestWay, currentWay) {
+    if (null != currentFindShortestWay && currentFindShortestWay.length <= currentWay.length) {
+        return currentWay;
+    }
+
 }
 
 function Point(x, y) {
@@ -304,6 +324,17 @@ Snake.prototype.moveOnePoint = function(direction, map) {
     }
 
     this.body.unshift(newPoint);
+    this.body.pop();
+
+    return true;
+}
+
+Snake.prototype.moveToThePoint = function(point) {
+    if (this.containsPoint(point)) {
+        return false;
+    }
+
+    this.body.unshift(point);
     this.body.pop();
 
     return true;
