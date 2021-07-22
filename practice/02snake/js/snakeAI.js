@@ -76,7 +76,7 @@ Game.prototype.start = function() {
         }
 
         if (null === shortestPathToFood || shortestPathToFood.length <= 0) {
-            shortestPathToFood = that.findAShortestPathToFoodTotal();
+            shortestPathToFood = that.findAShortestPathToFood();
             if (null === shortestPathToFood) {
                 clearInterval(that.running);
                 alert("there is no path for snake to eat food");
@@ -105,7 +105,7 @@ Game.prototype.snakeEatFood = function() {
     this.snake.eatFood(this.food);
 }
 
-Game.prototype.findAShortestPathToFoodTotal = function() {
+Game.prototype.findAShortestPathToFood = function() {
     let currentPath = new Path();
     currentPath.addSnake(this.snake);
 
@@ -120,10 +120,10 @@ Game.prototype.findAShortestPathToFoodTotal = function() {
 }
 
 Game.prototype.findAShortestPathToFoodInAllDirection = function(snake, currentPath, currentFindShortestPath) {
-    let shortestPathForNorthDirection = this.findAShortestPathToFoodSub(DIRECTION.NORTH, snake, currentPath, currentFindShortestPath);
-    let shortestPathForEastDirection = this.findAShortestPathToFoodSub(DIRECTION.EAST, snake, currentPath, currentFindShortestPath);
-    let shortestPathForSouthDirection = this.findAShortestPathToFoodSub(DIRECTION.SOUTH, snake, currentPath, currentFindShortestPath);
-    let shortestPathForWastDirection = this.findAShortestPathToFoodSub(DIRECTION.WAST, snake, currentPath, currentFindShortestPath);
+    let shortestPathForNorthDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.NORTH, snake, currentPath, currentFindShortestPath);
+    let shortestPathForEastDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.EAST, snake, currentPath, currentFindShortestPath);
+    let shortestPathForSouthDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.SOUTH, snake, currentPath, currentFindShortestPath);
+    let shortestPathForWastDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.WAST, snake, currentPath, currentFindShortestPath);
     
     let shortestPath = null;
     if (null !== shortestPathForNorthDirection) {
@@ -142,7 +142,7 @@ Game.prototype.findAShortestPathToFoodInAllDirection = function(snake, currentPa
     return shortestPath;
 }
 
-Game.prototype.findAShortestPathToFoodSub = function(direction, snake, currentPath, currentFindShortestPath) {
+Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake, currentPath, currentFindShortestPath) {
     if (null !== currentFindShortestPath && currentPath.length >= currentFindShortestPath.length) {
         return null;
     }
@@ -164,8 +164,6 @@ Game.prototype.findAShortestPathToFoodSub = function(direction, snake, currentPa
         return currentFindShortestPath.length > shortestPath.length ? currentFindShortestPath : shortestPath;
     }
 }
-
-
 
 function Point(x, y) {
     this.x = x;
