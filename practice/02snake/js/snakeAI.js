@@ -471,6 +471,19 @@ Path.prototype.pointInSnake= function(point, snake) {
     return false;
 }
 
+Path.prototype.deepCopy = function() {
+    let copy = new Path();
+
+    let copyBody = new Array();
+    for (let i = 0; i < this.body.length; i++) {
+        copyBody.push(new Point(this.body[i].x, this.body[i].y))
+    }
+
+    copy.body = copyBody;
+
+    return copy;
+}
+
 var canvas = document.getElementById("canvas");
 canvas.height = 200;
 canvas.width  = 200;
