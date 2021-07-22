@@ -451,6 +451,26 @@ Path.prototype.init = function(snake) {
     this.body = body;
 }
 
+Path.prototype.containsPoint = function(point) {
+    for (let i = 0; i < this.body.length; i++) {
+        if (this.body[i].equals(point)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Path.prototype.pointInSnake= function(point, snake) {
+    for (let i = 0; i < snake.body.length; i++) {
+        if (this.body[this.body.length - 1 - i].equals(point)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 var canvas = document.getElementById("canvas");
 canvas.height = 200;
 canvas.width  = 200;
