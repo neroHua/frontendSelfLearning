@@ -77,12 +77,14 @@ Game.prototype.start = function() {
 
         if (null === shortestPathToFood || shortestPathToFood.length <= 0) {
             shortestPathToFood = that.findAShortestPathToFoodTotal();
-            if (null == shortestPathToFood) {
+            if (null === shortestPathToFood) {
+                clearInterval(that.running);
                 alert("there is no path for snake to eat food");
             }
         }
 
-        if (that.canSnakeEatFood()) {
+        if (1 === shortestPathToFood.body.length) {
+            shortestPathToFood = null;
             that.snakeEatFood();
 
             that.food.newRandomFood(that.map, that.snake);
@@ -90,17 +92,11 @@ Game.prototype.start = function() {
             that.snake.drawSnake();
             return;
         }
-
-        let preSnakeTail = that.snake.body[that.snake.body.length - 1];
-        // let successMoved = that.snake.moveOnePoint(that.direction, that.map);
-        let successMoved = that.snake.moveToThePoint(shortestPathToFood.body.shift());
-        if (successMoved) {
+        else {
+            let preSnakeTail = that.snake.body[that.snake.body.length - 1];
+            that.snake.moveToThePoint(shortestPathToFood.body.shift());
             that.snake.clearPreSnakeTail(preSnakeTail);
             that.snake.drawNewSnakeHead();
-        }
-        else {
-            clearInterval(that.running);
-            alert("game over");
         }
     }, that.timeBetweenTwoPoint);
 }
@@ -109,103 +105,67 @@ Game.prototype.snakeEatFood = function() {
     this.snake.eatFood(this.food);
 }
 
-Game.prototype.canSnakeEatFood = function() {
-    if (this.direction === DIRECTION.NORTH) {
-        if (this.food.body.x === this.snake.body[0].x && this.food.body.y + 1 === this.snake.body[0].y) {
-            return true;
-        }
-    }
-    else if (this.direction === DIRECTION.EAST) {
-        if (this.food.body.x - 1 === this.snake.body[0].x && this.food.body.y === this.snake.body[0].y) {
-            return true;
-        }
-    }
-    else if (this.direction === DIRECTION.SOUTH) {
-        if (this.food.body.x === this.snake.body[0].x && this.food.body.y - 1 === this.snake.body[0].y) {
-            return true;
-        }
-    }
-    else if (this.direction === DIRECTION.WAST) {
-        if (this.food.body.x + 1 === this.snake.body[0].x && this.food.body.y === this.snake.body[0].y) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 Game.prototype.findAShortestPathToFoodTotal = function() {
     let currentPath = new Path();
     currentPath.addSnake(this.snake);
 
-    let shortestPathForNorthDirection = this.findAShortestPathToFoodSub(DIRECTION.NORTH, this.snake, currentPath, null);
-    let shortestPathForEastDirection = this.findAShortestPathToFoodSub(DIRECTION.EAST, this.snake, currentPath, null);
-    let shortestPathForSouthDirection = this.findAShortestPathToFoodSub(DIRECTION.SOUTH, this.snake, currentPath, null);
-    let shortestPathForWastDirection = this.findAShortestPathToFoodSub(DIRECTION.WAST, this.snake, currentPath, null);
+    let shortestPath = this.findAShortestPathToFoodInAllDirection(this.snake, currentPath, null);
 
-    let shortestPath = null;
-    if (null != shortestPathForNorthDirection) {
-        shortestPath = shortestPathForNorthDirection;
+    if (null != shortestPath) {
+        shortestPath.removeSnake(this.snake)
     }
-    if (null != shortestPathForEastDirection) {
-        shortestPath = null == shortestPath ? shortestPathForEastDirection : shortestPath.length > shortestPathForEastDirection.length ? shortestPathForEastDirection : shortestPath;
-    }
-    if (null != shortestPathForSouthDirection) {
-        shortestPath = null == shortestPath ? shortestPathForSouthDirection : shortestPath.length > shortestPathForSouthDirection.length ? shortestPathForSouthDirection : shortestPath;
-    }
-    if (null != shortestPathForWastDirection) {
-        shortestPath = null == shortestPath ? shortestPathForWastDirection : shortestPath.length > shortestPathForWastDirection.length ? shortestPathForWastDirection : shortestPath;
-    }
-
-    shortestPath.removeSnake(this.snake)
     console.log(shortestPath);
 
     return shortestPath;
 }
 
+Game.prototype.findAShortestPathToFoodInAllDirection = function(snake, currentPath, currentFindShortestPath) {
+    let shortestPathForNorthDirection = this.findAShortestPathToFoodSub(DIRECTION.NORTH, snake, currentPath, currentFindShortestPath);
+    let shortestPathForEastDirection = this.findAShortestPathToFoodSub(DIRECTION.EAST, snake, currentPath, currentFindShortestPath);
+    let shortestPathForSouthDirection = this.findAShortestPathToFoodSub(DIRECTION.SOUTH, snake, currentPath, currentFindShortestPath);
+    let shortestPathForWastDirection = this.findAShortestPathToFoodSub(DIRECTION.WAST, snake, currentPath, currentFindShortestPath);
+    
+    let shortestPath = null;
+    if (null !== shortestPathForNorthDirection) {
+        shortestPath = shortestPathForNorthDirection;
+    }
+    if (null !== shortestPathForEastDirection) {
+        shortestPath = null === shortestPath ? shortestPathForEastDirection : shortestPath.length > shortestPathForEastDirection.length ? shortestPathForEastDirection : shortestPath;
+    }
+    if (null !== shortestPathForSouthDirection) {
+        shortestPath = null === shortestPath ? shortestPathForSouthDirection : shortestPath.length > shortestPathForSouthDirection.length ? shortestPathForSouthDirection : shortestPath;
+    }
+    if (null !== shortestPathForWastDirection) {
+        shortestPath = null === shortestPath ? shortestPathForWastDirection : shortestPath.length > shortestPathForWastDirection.length ? shortestPathForWastDirection : shortestPath;
+    }
+
+    return shortestPath;
+}
+
 Game.prototype.findAShortestPathToFoodSub = function(direction, snake, currentPath, currentFindShortestPath) {
-    if (null != currentFindShortestPath && currentPath.length >= currentFindShortestPath.length) {
+    if (null !== currentFindShortestPath && currentPath.length >= currentFindShortestPath.length) {
         return null;
     }
 
     if (!currentPath.currentPathAddOnePoint(direction, snake, this.map)) {
         return null;
     }
-    else {
-        if (currentPath.lastPointEqualsFood(this.food)) {
-            currentFindShortestPath = null == currentFindShortestPath ? currentPath.deepCopy() : currentFindShortestPath;
-            return currentPath;
-        }
+    if (currentPath.lastPointEqualsFood(this.food)) {
+        currentFindShortestPath = null === currentFindShortestPath ? currentPath.deepCopy() : currentFindShortestPath;
+        return currentFindShortestPath;
     }
 
-    let shortestPathForNorthDirection = this.findAShortestPathToFoodSub(DIRECTION.NORTH, this.snake, currentPath, currentFindShortestPath);
-    let shortestPathForEastDirection = this.findAShortestPathToFoodSub(DIRECTION.EAST, this.snake, currentPath, currentFindShortestPath);
-    let shortestPathForSouthDirection = this.findAShortestPathToFoodSub(DIRECTION.SOUTH, this.snake, currentPath, currentFindShortestPath);
-    let shortestPathForWastDirection = this.findAShortestPathToFoodSub(DIRECTION.WAST, this.snake, currentPath, currentFindShortestPath);
-    
-    let shortestPath = null;
-    if (null != shortestPathForNorthDirection) {
-        shortestPath = shortestPathForNorthDirection;
-    }
-    if (null != shortestPathForEastDirection) {
-        shortestPath = null == shortestPath ? shortestPathForEastDirection : shortestPath.length > shortestPathForEastDirection.length ? shortestPathForEastDirection : shortestPath;
-    }
-    if (null != shortestPathForSouthDirection) {
-        shortestPath = null == shortestPath ? shortestPathForSouthDirection : shortestPath.length > shortestPathForSouthDirection.length ? shortestPathForSouthDirection : shortestPath;
-    }
-    if (null != shortestPathForWastDirection) {
-        shortestPath = null == shortestPath ? shortestPathForWastDirection : shortestPath.length > shortestPathForWastDirection.length ? shortestPathForWastDirection : shortestPath;
-    }
+    let shortestPath = this.findAShortestPathToFoodInAllDirection(snake, currentPath, currentFindShortestPath);
 
-
-    if (null == currentFindShortestPath) {
-        return shortestPath;
+    if (null === currentFindShortestPath || null === shortestPath) {
+        return null == currentFindShortestPath ? shortestPath : currentFindShortestPath;
     }
     else {
         return currentFindShortestPath.length > shortestPath.length ? currentFindShortestPath : shortestPath;
     }
-
 }
+
+
 
 function Point(x, y) {
     this.x = x;
@@ -238,11 +198,40 @@ Point.prototype.drawGap = function(color, point) {
 }
 
 Point.prototype.equals = function(point) {
-    return this.x === point.x && this.y === point.y;
+    return null !== point && this.x === point.x && this.y === point.y;
 }
 
-Point.prototype.equals = function(point) {
-    return this.x === point.x && this.y === point.y;
+Point.prototype.nextPoint = function(direction, map) {
+    if (direction === DIRECTION.NORTH) {
+        if (this.y - 1 < 0) {
+            return null;
+        }
+
+        return new Point(this.x, this.y - 1);
+    }
+    else if (direction === DIRECTION.EAST) {
+        if (this.x + 1 >= map.xGridCount) {
+            return null;
+        }
+
+        return new Point(this.x + 1, this.y);
+    }
+    else if (direction === DIRECTION.SOUTH) {
+        if (this.y + 1 >= map.yGridCount) {
+            return null;
+        }
+
+        return new Point(this.x, this.y + 1);
+    }
+    else if (direction === DIRECTION.WAST) {
+        if (this.x - 1 < 0) {
+            return null;
+        }
+
+        return new Point(this.x - 1, this.y);
+    }
+
+    return null;
 }
 
 function Map(xGridCount, yGridCount) {
@@ -350,36 +339,7 @@ Snake.prototype.containsPoint = function(point) {
 
 Snake.prototype.moveOnePoint = function(direction, map) {
     let head = this.body[0];
-    let newPoint = null;
-
-    if (direction === DIRECTION.NORTH) {
-        if (head.y - 1 < 0) {
-            return false;
-        }
-
-        newPoint = new Point(head.x, head.y - 1);
-    }
-    else if (direction === DIRECTION.EAST) {
-        if (head.x + 1 >= map.xGridCount) {
-            return false;
-        }
-
-        newPoint = new Point(head.x + 1, head.y);
-    }
-    else if (direction === DIRECTION.SOUTH) {
-        if (head.y + 1 >= map.yGridCount) {
-            return false;
-        }
-
-        newPoint = new Point(head.x, head.y + 1);
-    }
-    else if (direction === DIRECTION.WAST) {
-        if (head.x - 1 < 0) {
-            return false;
-        }
-
-        newPoint = new Point(head.x - 1, head.y);
-    }
+    let newPoint = head.nextPoint(direction, map);
 
     if (this.containsPoint(newPoint)) {
         return false;
@@ -454,35 +414,10 @@ Path.prototype.deepCopy = function() {
 
 Path.prototype.currentPathAddOnePoint = function(direction, snake, map) {
     let tail = this.body[this.body.length - 1];
-    let newPoint = null;
+    let newPoint = tail.nextPoint(direction, map);
 
-    if (direction === DIRECTION.NORTH) {
-        if (tail.y - 1 < 0) {
-            return false;
-        }
-
-        newPoint = new Point(tail.x, tail.y - 1);
-    }
-    else if (direction === DIRECTION.EAST) {
-        if (tail.x + 1 >= map.xGridCount) {
-            return false;
-        }
-
-        newPoint = new Point(tail.x + 1, tail.y);
-    }
-    else if (direction === DIRECTION.SOUTH) {
-        if (tail.y + 1 >= map.yGridCount) {
-            return false;
-        }
-
-        newPoint = new Point(tail.x, tail.y + 1);
-    }
-    else if (direction === DIRECTION.WAST) {
-        if (tail.x - 1 < 0) {
-            return false;
-        }
-
-        newPoint = new Point(tail.x - 1, tail.y);
+    if (null === newPoint) {
+        return false;
     }
 
     if (this.containsPoint(newPoint, snake)) {
