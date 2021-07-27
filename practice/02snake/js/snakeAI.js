@@ -154,14 +154,13 @@ Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake
     if (!currentPath.currentPathAddOnePoint(direction, snake, this.map)) {
         return null;
     }
+
     if (currentPath.lastPointEqualsFood(this.food)) {
         currentFindShortestPath = this.findShortestPathInTwoPath(currentPath, currentFindShortestPath);
         return currentFindShortestPath;
     }
 
     let shortestPath = this.findAShortestPathToFoodInAllDirection(snake, currentPath, currentFindShortestPath);
-
-    console.log(shortestPath);
 
     if (null === currentFindShortestPath || null === shortestPath) {
         return null == currentFindShortestPath ? shortestPath : currentFindShortestPath;
