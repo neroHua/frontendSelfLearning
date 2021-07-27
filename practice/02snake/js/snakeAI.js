@@ -69,7 +69,7 @@ Game.prototype.start = function() {
     let that = this;
     let shortestPathToFood = null;
     this.running = setInterval(function () {
-        if (that.snake.body.length === that.map.xGridCount * that.map.yGridCount) {
+        if (that.snake.body.length === that.map.size) {
             clearInterval(that.running);
             alert("good game");
             return;
@@ -77,7 +77,7 @@ Game.prototype.start = function() {
 
         if (null === shortestPathToFood || shortestPathToFood.length <= 0) {
             shortestPathToFood = that.findAShortestPathToFood();
-            if (null === shortestPathToFood) {
+            if (null === shortestPathToFood || shortestPathToFood.body.length === that.map.size) {
                 clearInterval(that.running);
                 alert("there is no path for snake to eat food");
             }
@@ -108,12 +108,14 @@ Game.prototype.snakeEatFood = function() {
 Game.prototype.findAShortestPathToFood = function() {
     let currentPath = new Path();
     currentPath.addSnake(this.snake);
-    let currentFindShortestPath = null;
+    let currentFindShortestPath = new Path();
+    currentFindShortestPath.body = new Array();
+    currentFindShortestPath.body.length = this.map.size;
 
     let shortestPath = this.findAShortestPathToFoodInAllDirection(this.snake, currentPath, currentFindShortestPath);
 
-    if (null != shortestPath) {
-        shortestPath.removeSnake(this.snake)
+    if (shortestPath.body.length < this.map.size) {
+        shortestPath.removeSnake(this.snake);
     }
     console.log(shortestPath);
 
@@ -143,7 +145,20 @@ Game.prototype.findShortestPathInTwoPath = function(path1, path2) {
         return path1;
     }
 
-    return path1.body.length <= path2.body.length ? path1 : path2;
+    if (path1.body.length === this.map.size || path2.body.length === this.map.size) {
+        return path1;
+    }
+
+    if (path1.body.length < path2.body.length) {
+        return path1;
+    }
+    else if (path1.body.length > path2.body.length) {
+        return path2;
+    }
+    else {
+        return path1.turningPointCount() <= path2.turningPointCount() ? path1 : path2;
+    }
+
 }
 
 Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake, currentPath, currentFindShortestPath) {
@@ -151,7 +166,7 @@ Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake
         return null;
     }
 
-    if (!currentPath.currentPathAddOnePoint(direction, snake, this.map)) {
+    if (!currentPath.currentPathAddOnePoint(direction, snake.body.length, this.map)) {
         return null;
     }
 
@@ -237,19 +252,37 @@ Point.prototype.nextPoint = function(direction, map) {
     return null;
 }
 
+Point.prototype.toNextPointDirection = function(nextPoint) {
+    if (this.x === nextPoint.x && this.y === nextPoint.y + 1) {
+        return DIRECTION.NORTH;
+    }
+    else if (this.x === nextPoint.x + 1 && this.y === nextPoint.y) {
+        return DIRECTION.EAST;
+    }
+    else if (this.x === nextPoint.x && this.y + 1 === nextPoint.y) {
+        return DIRECTION.SOUTH;
+    }
+    else if (this.x + 1 === nextPoint.x && this.y === nextPoint.y) {
+        return DIRECTION.WAST;
+    }
+
+    return null;
+}
+
 function Map(xGridCount, yGridCount) {
     this.color = COLOR.BLACK;
     this.xGridCount = xGridCount;
     this.yGridCount = yGridCount;
-    this.map = new Array(mapSize)
+    this.size = xGridCount * yGridCount;
+    this.body = new Array(xGridCount * yGridCount)
 }
 
 Map.prototype.init = function() {
-    map = new Array(this.xGridCount);
+    this.body = new Array(this.xGridCount);
     for (let i = 0; i < this.xGridCount; i++) {
-        map[i] = new Array(this.yGridCount);
+        this.body[i] = new Array(this.yGridCount);
         for (let j = 0; j < this.yGridCount; j++) {
-            map[i][j] = 0;
+            this.body[i][j] = 0;
         }
     }
 }
@@ -382,8 +415,8 @@ Path.prototype.removeSnake = function(snake) {
     }
 }
 
-Path.prototype.containsPoint = function(point) {
-    for (let i = 0; i < this.body.length; i++) {
+Path.prototype.containsPoint = function(point, snakeBodyLength) {
+    for (let i = this.body.length - snakeBodyLength; i < this.body.length; i++) {
         if (this.body[i].equals(point)) {
             return true;
         }
@@ -415,7 +448,7 @@ Path.prototype.deepCopy = function() {
     return copy;
 }
 
-Path.prototype.currentPathAddOnePoint = function(direction, snake, map) {
+Path.prototype.currentPathAddOnePoint = function(direction, snakeBodyLength, map) {
     let tail = this.body[this.body.length - 1];
     let newPoint = tail.nextPoint(direction, map);
 
@@ -423,7 +456,7 @@ Path.prototype.currentPathAddOnePoint = function(direction, snake, map) {
         return false;
     }
 
-    if (this.containsPoint(newPoint, snake)) {
+    if (this.containsPoint(newPoint, snakeBodyLength)) {
         return false;
     }
 
@@ -434,6 +467,17 @@ Path.prototype.currentPathAddOnePoint = function(direction, snake, map) {
 
 Path.prototype.lastPointEqualsFood = function(food) {
     return this.body[this.body.length - 1].x === food.body.x && this.body[this.body.length - 1].y === food.body.y;
+}
+
+Path.prototype.turningPointCount = function() {
+    let turningPointCount = 0;
+    for (let i = 0; i < this.body.length - 2; i++) {
+        if (this.body[i].toNextPointDirection(this.body[i + 1]) !== this.body[i + 1].toNextPointDirection(this.body[i + 2])) {
+            turningPointCount++;
+        }
+    }
+
+    return turningPointCount;
 }
 
 var canvas = document.getElementById("canvas");
