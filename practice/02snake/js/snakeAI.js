@@ -351,7 +351,8 @@ function Food(x, y) {
 }
 
 Food.prototype.init = function() {
-    this.body = new Point(5, 2);
+    // this.body = new Point(5, 2);
+    this.body = new Point(6, 5);
 }
 
 Food.prototype.drawFood = function() {
@@ -383,9 +384,44 @@ function Snake(body) {
 
 Snake.prototype.init = function() {
     let body = new Array();
-    body.push(new Point(3, 2));
-    body.push(new Point(2, 2));
-    body.push(new Point(1, 2));
+    // body.push(new Point(3, 2));
+    // body.push(new Point(2, 2));
+    // body.push(new Point(1, 2));
+    body.push(new Point(6, 6));
+    body.push(new Point(5, 6));
+    body.push(new Point(4, 6));
+    body.push(new Point(3, 6));
+    body.push(new Point(2, 6));
+    body.push(new Point(1, 6));
+    body.push(new Point(1, 5));
+    body.push(new Point(1, 4));
+    body.push(new Point(1, 3));
+    body.push(new Point(0, 3));
+    body.push(new Point(0, 4));
+    body.push(new Point(0, 5));
+    body.push(new Point(0, 6));
+    body.push(new Point(0, 7));
+    body.push(new Point(1, 7));
+    body.push(new Point(2, 7));
+    body.push(new Point(3, 7));
+    body.push(new Point(4, 7));
+    body.push(new Point(5, 7));
+    body.push(new Point(6, 7));
+    body.push(new Point(7, 7));
+    body.push(new Point(7, 6));
+    body.push(new Point(7, 5));
+    body.push(new Point(7, 4));
+    body.push(new Point(7, 3));
+    body.push(new Point(7, 2));
+    body.push(new Point(7, 1));
+    body.push(new Point(7, 0));
+    body.push(new Point(6, 0));
+    body.push(new Point(6, 1));
+    body.push(new Point(6, 2));
+    body.push(new Point(6, 3));
+    body.push(new Point(6, 4));
+    body.push(new Point(5, 4));
+    body.push(new Point(5, 5));
     this.body = body;
 }
 
@@ -413,7 +449,7 @@ Snake.prototype.eatFood = function(food) {
 }
 
 Snake.prototype.containsPoint = function(point) {
-    for (let i = 0; i < this.body.length; i++) {
+    for (let i = 0; i < this.body.length - 1; i++) {
         if (this.body[i].equals(point)) {
             return true;
         }
@@ -465,7 +501,7 @@ Path.prototype.removeSnake = function(snake) {
 }
 
 Path.prototype.containsPoint = function(point, snakeBodyLength) {
-    for (let i = this.body.length - snakeBodyLength; i < this.body.length; i++) {
+    for (let i = this.body.length - snakeBodyLength + 1; i < this.body.length; i++) {
         if (this.body[i].equals(point)) {
             return true;
         }
