@@ -110,11 +110,11 @@ Game.prototype.findAShortestPathToFood = function() {
     currentPath.addSnake(this.snake);
     let currentFindShortestPath = new Path();
     currentFindShortestPath.body = new Array();
-    currentFindShortestPath.body.length = this.map.size;
+    currentFindShortestPath.body.length = this.map.size + this.snake.body.length;
 
     let shortestPath = this.findAShortestPathToFoodInAllDirection(this.snake, currentPath, currentFindShortestPath);
 
-    if (shortestPath.body.length < this.map.size) {
+    if (shortestPath.body.length - this.snake.body.length < this.map.size) {
         shortestPath.removeSnake(this.snake);
     }
     console.log(shortestPath);
@@ -124,19 +124,19 @@ Game.prototype.findAShortestPathToFood = function() {
 
 Game.prototype.findAShortestPathToFoodInAllDirection = function(snake, currentPath, currentFindShortestPath) {
     let shortestPathForNorthDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.NORTH, snake, currentPath.deepCopy(), currentFindShortestPath);
-    currentFindShortestPath = this.findShortestPathInTwoPath(shortestPathForNorthDirection, currentFindShortestPath);
+    currentFindShortestPath = this.findShortestPathInTwoPath(shortestPathForNorthDirection, currentFindShortestPath, snake);
 
     let shortestPathForEastDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.EAST, snake, currentPath.deepCopy(), currentFindShortestPath);
-    currentFindShortestPath = this.findShortestPathInTwoPath(shortestPathForEastDirection, currentFindShortestPath);
+    currentFindShortestPath = this.findShortestPathInTwoPath(shortestPathForEastDirection, currentFindShortestPath, snake);
 
     let shortestPathForSouthDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.SOUTH, snake, currentPath.deepCopy(), currentFindShortestPath);
-    currentFindShortestPath = this.findShortestPathInTwoPath(shortestPathForSouthDirection, currentFindShortestPath);
+    currentFindShortestPath = this.findShortestPathInTwoPath(shortestPathForSouthDirection, currentFindShortestPath, snake);
 
     let shortestPathForWastDirection = this.findAShortestPathToFoodInOneDirection(DIRECTION.WAST, snake, currentPath.deepCopy(), currentFindShortestPath);
-    return this.findShortestPathInTwoPath(shortestPathForWastDirection, currentFindShortestPath);
+    return this.findShortestPathInTwoPath(shortestPathForWastDirection, currentFindShortestPath, snake);
 }
 
-Game.prototype.findShortestPathInTwoPath = function(path1, path2) {
+Game.prototype.findShortestPathInTwoPath = function(path1, path2, snake) {
     if (null === path1) {
         return path2;
     }
@@ -145,7 +145,7 @@ Game.prototype.findShortestPathInTwoPath = function(path1, path2) {
         return path1;
     }
 
-    if (path1.body.length === this.map.size || path2.body.length === this.map.size) {
+    if (path1.body.length - snake.body.length === this.map.size || path2.body.length - snake.body.length === this.map.size) {
         return path1;
     }
 
@@ -171,7 +171,7 @@ Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake
     }
 
     if (currentPath.lastPointEqualsFood(this.food) && this.currentFindShortestPathDoNotMakeSnakeDead(currentPath, snake)) {
-        currentFindShortestPath = this.findShortestPathInTwoPath(currentPath, currentFindShortestPath);
+        currentFindShortestPath = this.findShortestPathInTwoPath(currentPath, currentFindShortestPath, snake);
         return currentFindShortestPath;
     }
 
@@ -191,7 +191,7 @@ Game.prototype.currentFindShortestPathDoNotMakeSnakeDead = function(currentPath,
     let aPathFromSnakeHeadToSnakeTail = new Path();
     aPathFromSnakeHeadToSnakeTail.addSnake(newSnake);
 
-    return this.hasAPathFromSnakeHeadToSnakeTailInAllDiection(newSnake, newSnakeTail, aPathFromSnakeHeadToSnakeTail, this.map.size);
+    return this.hasAPathFromSnakeHeadToSnakeTailInAllDiection(newSnake, newSnakeTail, aPathFromSnakeHeadToSnakeTail, this.map.size + newSnake.body.length);
 }
 
 Game.prototype.hasAPathFromSnakeHeadToSnakeTailInAllDiection = function(newSnake, newSnakeTail, currentPath, maxPathSize) {
@@ -541,7 +541,7 @@ Path.prototype.currentPathAddOnePoint = function(direction, snakeBodyLength, map
         return false;
     }
 
-    if (this.body.length > map.size) {
+    if (this.body.length > map.size + snakeBodyLength) {
         return false;
     }
 
