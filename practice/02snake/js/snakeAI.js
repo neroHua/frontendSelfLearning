@@ -505,6 +505,10 @@ Path.prototype.currentPathAddOnePoint = function(direction, snakeBodyLength, map
         return false;
     }
 
+    if (this.body.length > map.size) {
+        return false;
+    }
+
     if (this.containsPoint(newPoint, snakeBodyLength)) {
         return false;
     }
