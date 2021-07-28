@@ -170,7 +170,7 @@ Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake
         return null;
     }
 
-    if (currentPath.lastPointEqualsFood(this.food)) {
+    if (currentPath.lastPointEqualsFood(this.food) && this.currentFindShortestPathDoNotMakeSnakeDead(currentPath, snake)) {
         currentFindShortestPath = this.findShortestPathInTwoPath(currentPath, currentFindShortestPath);
         return currentFindShortestPath;
     }
@@ -183,6 +183,55 @@ Game.prototype.findAShortestPathToFoodInOneDirection = function(direction, snake
     else {
         return currentFindShortestPath.length > shortestPath.length ? currentFindShortestPath : shortestPath;
     }
+}
+
+Game.prototype.currentFindShortestPathDoNotMakeSnakeDead = function(currentPath, snake) {
+    let newSnake = currentPath.calculateNewSnake(snake);
+    let newSnakeTail = currentPath.calculateNewSnakeTail(snake);
+    let aPathFromSnakeHeadToSnakeTail = new Path();
+    aPathFromSnakeHeadToSnakeTail.addSnake(newSnake);
+
+    return this.hasAPathFromSnakeHeadToSnakeTailInAllDiection(newSnake, newSnakeTail, aPathFromSnakeHeadToSnakeTail, this.map.size);
+}
+
+Game.prototype.hasAPathFromSnakeHeadToSnakeTailInAllDiection = function(newSnake, newSnakeTail, currentPath, maxPathSize) {
+    if (this.hasAPathFromSnakeHeadToSnakeTailInOneDiection(DIRECTION.NORTH, newSnake, newSnakeTail, currentPath.deepCopy(), maxPathSize)) {
+        return true;
+    }
+
+    if (this.hasAPathFromSnakeHeadToSnakeTailInOneDiection(DIRECTION.EAST, newSnake, newSnakeTail, currentPath.deepCopy(), maxPathSize)) {
+        return true;
+    }
+
+    if (this.hasAPathFromSnakeHeadToSnakeTailInOneDiection(DIRECTION.SOUTH, newSnake, newSnakeTail, currentPath.deepCopy(), maxPathSize)) {
+        return true;
+    }
+
+    if (this.hasAPathFromSnakeHeadToSnakeTailInOneDiection(DIRECTION.WAST, newSnake, newSnakeTail, currentPath.deepCopy(), maxPathSize)) {
+        return true;
+    }
+
+    return false;
+}
+
+Game.prototype.hasAPathFromSnakeHeadToSnakeTailInOneDiection = function(direction, newSnake, newSnakeTail, currentPath, maxPathSize) {
+    if (currentPath.body.length > maxPathSize) {
+        return false;
+    }
+
+    if (!currentPath.currentPathAddOnePoint(direction, newSnake.body.length, this.map)) {
+        return false;
+    }
+
+    if (currentPath.lastPointEqualsSnakeTail(newSnakeTail)) {
+        return true;
+    }
+
+    if (this.hasAPathFromSnakeHeadToSnakeTailInAllDiection(newSnake, newSnakeTail, currentPath, maxPathSize)) {
+        return true;
+    }
+
+    return false;
 }
 
 function Point(x, y) {
@@ -469,6 +518,10 @@ Path.prototype.lastPointEqualsFood = function(food) {
     return this.body[this.body.length - 1].x === food.body.x && this.body[this.body.length - 1].y === food.body.y;
 }
 
+Path.prototype.lastPointEqualsSnakeTail = function(snakeTail) {
+    return this.body[this.body.length - 1].x === snakeTail.x && this.body[this.body.length - 1].y === snakeTail.y;
+}
+
 Path.prototype.turningPointCount = function() {
     let turningPointCount = 0;
     for (let i = 0; i < this.body.length - 2; i++) {
@@ -478,6 +531,21 @@ Path.prototype.turningPointCount = function() {
     }
 
     return turningPointCount;
+}
+
+Path.prototype.calculateNewSnake = function(snake) {
+    let newSnake = new Snake();
+    newSnake.body = new Array();
+
+    for (let i = 0; i < snake.body.length + 1; i++) {
+        newSnake.body.push(new Point(this.body[this.body.length - 1 - i].x, this.body[this.body.length - 1 - i].y))
+    }
+
+    return newSnake;
+}
+
+Path.prototype.calculateNewSnakeTail = function(snake) {
+    return new Point(this.body[this.body.length - snake.body.length - 1].x, this.body[this.body.length - snake.body.length - 1].y);
 }
 
 var canvas = document.getElementById("canvas");
